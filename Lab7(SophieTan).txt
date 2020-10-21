@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Create a basic bash script
+
+echo "What is your name?"
+read USERNAME
+echo " Hi, $USERNAME"
+
+if [ $# -eq 1]; then
+     echo " Hello, $USERNAME!"
+else 
+     exit
+fi
+
+
+
+# Use the command line argument
+
+echo "Input a word"
+read INPUTWORD
+
+case INPUTWORD in
+INPUT)
+   echo "OUTPUT"
+   ;;
+Night)
+   echo "Day"
+   ;;
+Day)
+   echo "Night"
+   ;;
+Nait)
+   echo "Sait"
+   ;;
+*)
+   echo "Hello World!"
+esac
+
+
+
+# Count and do some math
+
+
+
+echo "example of a file read"
+echo
+NUM=1
+
+while read LINE
+do
+	echo "Line number: $NUM"
+	echo $LINE
+	NUM=$[$NUM+1]
+done <$1
+

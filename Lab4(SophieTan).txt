@@ -1,0 +1,187 @@
+[root@localhost /]# fdisk -l | grep sd
+Disk /dev/sda: 30 GiB, 32212254720 bytes, 62914560 sectors
+/dev/sda1  *       2048  2099199  2097152   1G 83 Linux
+/dev/sda2       2099200 62914559 60815360  29G 8e Linux LVM
+Disk /dev/sdc: 7 GiB, 7516192768 bytes, 14680064 sectors
+/dev/sdc1        2048 14680063 14678016   7G 8e Linux LVM
+Disk /dev/sdb: 2 GiB, 2147483648 bytes, 4194304 sectors
+/dev/sdb1          2048  411647  409600  200M 83 Linux
+/dev/sdb2        411648 1230847  819200  400M 83 Linux
+/dev/sdb3       1230848 2664447 1433600  700M 82 Linux swap / Solaris
+Disk /dev/sdd: 3 GiB, 3221225472 bytes, 6291456 sectors
+/dev/sdd1        2048 6291455 6289408   3G 8e Linux LVM
+
+[root@localhost /]# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+devtmpfs                     2.8G     0  2.8G   0% /dev
+tmpfs                        2.9G     0  2.9G   0% /dev/shm
+tmpfs                        2.9G   11M  2.9G   1% /run
+tmpfs                        2.9G     0  2.9G   0% /sys/fs/cgroup
+/dev/mapper/cl-root           12G  3.9G  8.2G  33% /
+/dev/mapper/cl-var           2.0G  419M  1.6G  21% /var
+/dev/mapper/cl-opt           2.9G  9.0M  2.8G   1% /opt
+/dev/mapper/cl-home          9.8G  124M  9.2G   2% /home
+/dev/sda1                   1014M  230M  785M  23% /boot
+tmpfs                        577M  1.2M  576M   1% /run/user/42
+tmpfs                        577M  4.6M  573M   1% /run/user/1000
+/dev/sr0                     7.7G  7.7G     0 100% /run/media/admin/CentOS-8-2-2004-x86_64-dvd
+/dev/sdb1                    190M  1.6M  179M   1% /2GB/apps
+/dev/sdb2                    395M   24M  372M   6% /2GB/data
+/dev/mapper/vg_data-lv_docs  3.9G   16M  3.7G   1% /vg_data/lv_docs
+/dev/mapper/vg_data-lv_pics  4.9G   11M  4.6G   1% /vg_data/lv_pics
+
+
+[root@localhost /]# swapon
+NAME      TYPE      SIZE USED PRIO
+/dev/dm-1 partition   2G   0B   -2
+
+[root@localhost /]# cat /etc/fstab
+
+#
+# /etc/fstab
+# Created by anaconda on Mon Sep  7 20:14:00 2020
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk/'.
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info.
+#
+# After editing this file, run 'systemctl daemon-reload' to update systemd
+# units generated from this file.
+#
+/dev/mapper/cl-root                       /                       xfs     defaults        0 0
+UUID=2b2c3a9c-99f3-43e7-86b2-e045cadd1194 /boot                   xfs     defaults        0 0
+/dev/mapper/cl-home                       /home                   ext4    defaults        1 2
+/dev/mapper/cl-opt                        /opt                    ext4    defaults        1 2
+/dev/mapper/cl-var                        /var                    xfs     defaults        0 0
+/dev/mapper/cl-swap                       swap                    swap    defaults        0 0
+
+#2GB Physically Partition Disk
+/dev/sdb1                                 /2GB/apps               ext3    defaults        0 0
+/dev/sdb2                                 /2GB/data               xfs     defaults        0 0
+/dev/sdb3                                 swap		          swap    defaults        0 0
+
+# 2 disk LVM example
+/dev/mapper/vg_data-lv_docs               /vg_data/lv_docs        ext4    defaults        0 0
+/dev/mapper/vg_data-lv_pics               /vg_data/lv_pics        ext3    defaults        0 0
+
+
+[root@localhost /]# lvdisplay
+  --- Logical volume ---
+  LV Path                /dev/vg_data/lv_docs
+  LV Name                lv_docs
+  VG Name                vg_data
+  LV UUID                1n7zOs-0qKl-pyO1-IKNN-v4JF-7HOP-8azZQY
+  LV Write Access        read/write
+  LV Creation host, time localhost.localdomain, 2020-09-07 19:21:29 -0600
+  LV Status              available
+  # open                 1
+  LV Size                4.00 GiB
+  Current LE             1024
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:5
+   
+  --- Logical volume ---
+  LV Path                /dev/vg_data/lv_pics
+  LV Name                lv_pics
+  VG Name                vg_data
+  LV UUID                g6slY8-oi7V-9uqO-8JVu-33Jv-UPiw-ynZzrO
+  LV Write Access        read/write
+  LV Creation host, time localhost.localdomain, 2020-09-07 19:21:58 -0600
+  LV Status              available
+  # open                 1
+  LV Size                5.00 GiB
+  Current LE             1280
+  Segments               2
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:6
+   
+  --- Logical volume ---
+  LV Path                /dev/cl/root
+  LV Name                root
+  VG Name                cl
+  LV UUID                3bzKAm-Q0ha-kvoY-SZh2-uj8p-ogBW-COFVif
+  LV Write Access        read/write
+  LV Creation host, time localhost, 2020-09-07 18:13:56 -0600
+  LV Status              available
+  # open                 1
+  LV Size                12.00 GiB
+  Current LE             3072
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:0
+   
+  --- Logical volume ---
+  LV Path                /dev/cl/swap
+  LV Name                swap
+  VG Name                cl
+  LV UUID                KUpzXf-fIUu-SxjT-LWOJ-0cXv-dwtv-fa6GJS
+  LV Write Access        read/write
+  LV Creation host, time localhost, 2020-09-07 18:13:57 -0600
+  LV Status              available
+  # open                 2
+  LV Size                2.00 GiB
+  Current LE             512
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:1
+   
+  --- Logical volume ---
+  LV Path                /dev/cl/home
+  LV Name                home
+  VG Name                cl
+  LV UUID                Jz1nOj-R82W-HLQK-21zb-zr9t-4lm0-e1xlUg
+  LV Write Access        read/write
+  LV Creation host, time localhost, 2020-09-07 18:13:57 -0600
+  LV Status              available
+  # open                 1
+  LV Size                10.00 GiB
+  Current LE             2560
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:2
+   
+  --- Logical volume ---
+  LV Path                /dev/cl/opt
+  LV Name                opt
+  VG Name                cl
+  LV UUID                EQBTPd-GB2C-PMIR-Dfc6-YawU-IC7e-cYyO4V
+  LV Write Access        read/write
+  LV Creation host, time localhost, 2020-09-07 18:13:57 -0600
+  LV Status              available
+  # open                 1
+  LV Size                <3.00 GiB
+  Current LE             767
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:3
+   
+  --- Logical volume ---
+  LV Path                /dev/cl/var
+  LV Name                var
+  VG Name                cl
+  LV UUID                nxiEAQ-uuNK-XITV-sCXJ-FSU4-JnK4-D8uvuw
+  LV Write Access        read/write
+  LV Creation host, time localhost, 2020-09-07 18:13:57 -0600
+  LV Status              available
+  # open                 1
+  LV Size                <2.00 GiB
+  Current LE             511
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:4
+
+
